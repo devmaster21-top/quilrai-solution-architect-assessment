@@ -1,0 +1,34 @@
+# Local assessment demo only: these public credentials are intentionally synthetic.
+services:
+  mocks:
+    build: .
+    command: [uvicorn, 'quilr_gateway.mocks:create_mock_app', --factory, --host, 0.0.0.0, --port, '9001']
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    networks: [upstream]
+  gateway:
+    build: .
+    ports: ['127.0.0.1:8000:8000']
+    environment:
+      GATEWAY_TOKENS: '{"demo-viewer-token":{"tenant":"demo-tenant","role":"viewer"},"demo-admin-token":{"tenant":"demo-tenant","role":"admin"}}'
+      PRIMARY_URL: http://mocks:9001/primary/v1/chat/completions
+      BACKUP_URL: http://mocks:9001/backup/v1/chat/completions
+      MCP_URL: http://mocks:9001/mcp
+      DATABASE_PATH: /app/data/gateway.sqlite3
+    volumes: [gateway-data:/app/data]
+    depends_on: [mocks]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    networks: [upstream]
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+networks:
+  upstream:
+    internal: true
+volumes:
+  gateway-data:

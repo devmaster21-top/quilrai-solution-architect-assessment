@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quilr-secure-gateway"
+version = "1.0.0"
+description = "Solution Architect assessment: MCP and resilient LLM security gateways"
+requires-python = ">=3.11"
+dependencies = ["mcp==1.30.0", "httpx==0.28.1", "uvicorn==0.54.0", "pydantic==2.14.3", "starlette==1.10.0"]
+
+[project.optional-dependencies]
+dev = ["pytest==9.2.0", "pytest-asyncio==1.4.1.post1", "pytest-cov==7.1.0", "ruff==0.17.4"]
+
+[project.scripts]
+quilr-mcp = "quilr_gateway.mcp_server:main"
+quilr-demo = "quilr_gateway.demo:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ASYNC"]

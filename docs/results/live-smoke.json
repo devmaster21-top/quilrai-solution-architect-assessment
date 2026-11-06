@@ -1,0 +1,16 @@
+{
+  "transport": "real HTTP over loopback TCP",
+  "checks": {
+    "health": "passed",
+    "mcp_auth": "passed",
+    "incremental_stream_and_pii": "passed",
+    "[force-429]": "passed",
+    "[force-timeout]": "passed",
+    "error_sanitization": "passed"
+  },
+  "first_safe_delta_ms": 57.34,
+  "stream_total_ms": 499.9,
+  "safe_response": "Demo reply: email [REDACTED], SSN [REDACTED], card [REDACTED]. All sensitive values must be hidden.",
+  "[force-429]_ms": 462.13,
+  "[force-timeout]_ms": 3468.46
+}
