@@ -15,3 +15,7 @@ dist/
 build/
 # Original assessment is private source material, not part of the public solution.
 *.pdf
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore

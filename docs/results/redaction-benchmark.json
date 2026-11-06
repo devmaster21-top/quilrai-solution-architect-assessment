@@ -6,7 +6,7 @@
       "case": "normal_prose",
       "input_characters": 1000000,
       "output_characters": 700000,
-      "elapsed_seconds": 4.5917,
+      "elapsed_seconds": 4.6964,
       "peak_traced_bytes": 2767,
       "max_pending_characters": 19
     },
@@ -14,7 +14,7 @@
       "case": "adversarial_unbroken_token",
       "input_characters": 10000000,
       "output_characters": 10,
-      "elapsed_seconds": 0.8547,
+      "elapsed_seconds": 0.8083,
       "peak_traced_bytes": 833,
       "max_pending_characters": 320
     }

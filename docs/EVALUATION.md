@@ -7,7 +7,7 @@ Evaluated on Windows with Python 3.14.7. These results assess the supplied synth
 | Area | Executed evidence | Result |
 | --- | --- | --- |
 | Automated tests | Strict inputs; real MCP subprocess wire; HTTP authorization; SSE parsing; all PII split positions; cancellation; fallback; limiter persistence/concurrency | 95 passing tests |
-| Coverage | `pytest --cov=quilr_gateway` over the entire package, including demo code | About 87% line coverage |
+| Coverage | `pytest --cov=quilr_gateway` over the entire package, including demo code | About 85% line coverage |
 | Style and dependency consistency | Ruff lint/format and `pip check` | Passing |
 | Live TCP streaming | Self-started gateway and mock service over loopback | Safe deltas arrive before completion; three PII values masked |
 | Live primary throttling | Mock returns HTTP 429 | Backup selected |
@@ -27,6 +27,8 @@ Machine-readable evidence:
 Latency and allocation figures are local observations. The first safe delta measured roughly 43 ms in the initial run, versus roughly 483 ms for completion. These are not provider or network service-level guarantees. The checked-in JSON records the latest run and may differ slightly. `tracemalloc` reports the redactor loop's Python allocations, not the whole HTTP service's process memory.
 
 ## Evaluation against each task
+
+The live streaming check uses a client-controlled gate: the upstream sends the first word, then waits until the client receives a safe delta and releases the remaining response over a separate request. A fully buffered gateway cannot pass this check. This replaces an elapsed-time assertion that was sensitive to Windows CI scheduling; latency is still recorded as an observation.
 
 1. **MCP server:** uses the official SDK, advertises closed Pydantic schemas, validates exact ASCII customer IDs and finite positive amounts, rejects invalid arguments with `-32602`, isolates logs to stderr, and tests actual JSON-RPC stdout. The wire harness completes initialization and waits for replies before disconnecting.
 2. **MCP gateway:** authenticates opaque bearer credentials, transparently lists all tools, authorizes `admin_*` at execution, preserves request IDs, and verifies that rejected calls cause zero downstream tool executions. Service credentials and caller credentials remain separate. Malformed envelopes, unsupported batches/methods, notifications, and input limits have defined behavior.

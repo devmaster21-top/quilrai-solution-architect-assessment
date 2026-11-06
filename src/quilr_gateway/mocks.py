@@ -70,20 +70,36 @@ def create_mock_app():
             "Demo reply: email alex@example.com, SSN 123-45-6789, "
             "card 4111 1111 1111 1111. All sensitive values must be hidden."
         )
+        probe = asyncio.Event() if "[stream-probe]" in prompt else None
+        if probe is not None:
+            request.app.state.stream_probe = probe
 
         async def chunks():
             # Deliberately split inside every kind of PII.
             for offset in range(0, len(text), 4):
                 event = {"choices": [{"delta": {"content": text[offset : offset + 4]}}]}
                 yield f"data: {json.dumps(event)}\n\n"
+                if probe is not None and offset == 4:
+                    # The client must receive a safe word before releasing the
+                    # rest of the response, independent of OS timer precision.
+                    async with asyncio.timeout(5):
+                        await probe.wait()
                 await asyncio.sleep(0.005)
             yield "data: [DONE]\n\n"
 
         return StreamingResponse(chunks(), media_type="text/event-stream")
 
+    async def release_probe(request: Request):
+        probe = getattr(request.app.state, "stream_probe", None)
+        if probe is None:
+            return Response(status_code=409)
+        probe.set()
+        return Response(status_code=204)
+
     app = Starlette(
         routes=[
             Route("/mcp", mcp, methods=["POST"]),
+            Route("/probe/release", release_probe, methods=["POST"]),
             Route("/{provider}/v1/chat/completions", provider, methods=["POST"]),
         ]
     )

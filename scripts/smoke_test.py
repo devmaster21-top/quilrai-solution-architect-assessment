@@ -54,7 +54,7 @@ def main():
                     "/v1/completions",
                     headers=viewer,
                     json={
-                        "prompt": "Demonstrate PII redaction",
+                        "prompt": "[stream-probe] Demonstrate PII redaction",
                         "stream": True,
                     },
                 ) as response:
@@ -63,7 +63,12 @@ def main():
                         if line.startswith("data: "):
                             data = json.loads(line[6:])
                             if "text" in data:
-                                first_delta = first_delta or time.monotonic()
+                                if first_delta is None:
+                                    first_delta = time.monotonic()
+                                    # The mock cannot complete until this client
+                                    # has received a safe delta and releases it.
+                                    released = client.post("http://127.0.0.1:9001/probe/release")
+                                    assert released.status_code == 204
                                 text += data["text"]
                             assert "error" not in data
                 finished = time.monotonic()
@@ -77,7 +82,7 @@ def main():
                         "4111 1111 1111 1111",
                     )
                 )
-                assert first_delta < finished - 0.03, "The entire response was buffered"
+                report["checks"]["client_released_upstream_after_first_delta"] = "passed"
                 report["checks"]["incremental_stream_and_pii"] = "passed"
                 report["first_safe_delta_ms"] = round((first_delta - started) * 1000, 2)
                 report["stream_total_ms"] = round((finished - started) * 1000, 2)

@@ -3,14 +3,15 @@
   "checks": {
     "health": "passed",
     "mcp_auth": "passed",
+    "client_released_upstream_after_first_delta": "passed",
     "incremental_stream_and_pii": "passed",
     "[force-429]": "passed",
     "[force-timeout]": "passed",
     "error_sanitization": "passed"
   },
-  "first_safe_delta_ms": 57.34,
-  "stream_total_ms": 499.9,
+  "first_safe_delta_ms": 29.11,
+  "stream_total_ms": 490.39,
   "safe_response": "Demo reply: email [REDACTED], SSN [REDACTED], card [REDACTED]. All sensitive values must be hidden.",
-  "[force-429]_ms": 462.13,
-  "[force-timeout]_ms": 3468.46
+  "[force-429]_ms": 482.89,
+  "[force-timeout]_ms": 3503.64
 }
