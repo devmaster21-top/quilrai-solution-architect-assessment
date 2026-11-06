@@ -1,5 +1,5 @@
 {
-  "evaluated_at_utc": "2026-11-06T17:25:56.703632+00:00",
+  "evaluated_at_utc": "2026-11-06T17:38:56.313626+00:00",
   "python": "3.14.7",
   "platform": "Windows",
   "checks": {
@@ -12,7 +12,7 @@
   },
   "tests": 95,
   "failures": 0,
-  "line_coverage_percent": 86.51,
+  "line_coverage_percent": 85.31,
   "not_executed": [
     "Docker image build/runtime",
     "Paid live model providers",

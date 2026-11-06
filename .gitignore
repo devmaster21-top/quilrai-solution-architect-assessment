@@ -7,7 +7,6 @@ __pycache__/
 .coverage
 coverage.xml
 htmlcov/
-.env
 data/
 *.sqlite3*
 *.log
@@ -15,3 +14,9 @@ dist/
 build/
 # Original assessment is private source material, not part of the public solution.
 *.pdf
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
+config.bat
+node_modules
